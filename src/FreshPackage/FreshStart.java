@@ -22,11 +22,13 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.RadioButton;
+//import javafx.scene.control.RadioButton;
 import javax.imageio.ImageIO;
+import javax.swing.JRadioButton;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -48,13 +50,13 @@ public class FreshStart extends javax.swing.JFrame {
     Boolean clicked = false;
     ArrayList coordsX = new ArrayList(); 
     ArrayList coordsY; 
-    String a[] = {"1","2","3","4","5","6","7","8","9","10","11","12"};
+    String a[] = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"};
     int index=0;
     String cropSection = new String();
     
     public FreshStart() throws IOException {
         //initComponents();
-        setPreferredSize(new Dimension(600,600));
+        setPreferredSize(new Dimension(700,700));
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
         JPanel src_panel = new JPanel();
@@ -90,14 +92,14 @@ public class FreshStart extends javax.swing.JFrame {
         mouth_radio.setSize(60, 30);
         forehead_radio.setLocation(100,190);
         forehead_radio.setSize(90, 30);
-        cropButton.setLocation(350,310);
+        cropButton.setLocation(350,400);
         cropButton.setSize(new Dimension(60,30));
-        nextButton.setLocation(420,310);
+        nextButton.setLocation(420,400);
         nextButton.setSize(new Dimension(60,30));
         
-        rect = new Rectangle(350, 100, 200, 200);
+        rect = new Rectangle(350, 100, 256, 256);
         
-        String path = "C:\\Users\\subedipiyush\\Documents\\NetBeansProjects\\FaceAnnotation1\\src\\images\\faces database\\"+a[index]+".jpg";
+        String path = "C:\\Users\\subedipiyush\\Desktop\\Project\\Final face images\\"+a[index]+".jpg";
         image = ImageIO.read(new File(path));
                
         this.add(src_panel);
@@ -137,8 +139,8 @@ public class FreshStart extends javax.swing.JFrame {
    
     public void nextImage()
     {
-        index = (index+1)%12;
-        String path = "C:\\Users\\subedipiyush\\Documents\\NetBeansProjects\\FaceAnnotation1\\src\\images\\faces database\\"+a[index]+".jpg";
+        index = (index+1)%20;
+        String path = "C:\\Users\\subedipiyush\\Desktop\\Project\\Final face images\\"+a[index]+".jpg";
         try {
             image = ImageIO.read(new File(path));
         } catch (IOException ex) {
@@ -158,10 +160,12 @@ public class FreshStart extends javax.swing.JFrame {
         g.drawRect((int)coordsX.get(0),(int)coordsY.get(2),width, height);
        // BufferedImage croppedImage = image.getSubimage((int)coordsX.get(0), (int)coordsY.get(2), width, height);
         try {
+            String croppedImagePath = "C:\\Users\\subedipiyush\\Desktop\\Project\\Final Face Images\\"+cropSection+"\\"+a[index]+".jpg";
             Robot robot = new Robot();
             BufferedImage croppedImage;
             croppedImage = robot.createScreenCapture(new Rectangle((int)coordsX.get(0)+3,(int)coordsY.get(2)+3,width-6,height-6));   // 6 because of the radius of the circular dots
-            ImageIO.write(croppedImage,"png",new File("H:\\croppedImages\\"+a[index]+"_"+cropSection+".png"));
+            ImageIO.write(croppedImage,"png",new File(croppedImagePath));
+            addToDatabase(a[index],croppedImagePath,(int)coordsX.get(0),(int)coordsY.get(0),width,height);
             System.out.println("File Cropped Succesfully");            
         } catch (Exception ex) {
             Logger.getLogger(FreshStart.class.getName()).log(Level.SEVERE, null, ex);
@@ -206,6 +210,12 @@ public class FreshStart extends javax.swing.JFrame {
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     };
+    
+    public void addToDatabase(String id,String path,int x, int y, int w, int h) throws ClassNotFoundException, SQLException
+    {
+        new DatabaseInterface().addData(Integer.parseInt(id), path, x, y, w, h,cropSection);
+      //  new DatabaseInterface().getData("eyes", 1);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
