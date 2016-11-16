@@ -29,18 +29,24 @@ public class PopulationPanel extends javax.swing.JPanel {
     JButton but;
     private final int row_length = 4;
     private final int col_length = 4;
-    
-    public PopulationPanel(Main parent) throws IOException {
+    //ScratchGA generation;
+    public PopulationPanel(Main parent, ScratchGA generation){
         //initComponents();
         img_but = new JButton[row_length][col_length];
         setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
         setLayout(new GridLayout(4,4,3,3));
-        int index=1;
+        int index=0;
+       // generation= new ScratchGA();
         for(int i=0;i<row_length;i++)
         {
             for(int j=0;j<col_length;j++)
             {
-                BufferedImage img = ImageIO.read(new File("C:\\Users\\subedipiyush\\Desktop\\Project\\Final face images\\"+index+".jpg"));
+                String[] chromo = generation.getChromo(index);
+                /*for(int x=0;x<chromo.length;x++)
+                    System.out.print(chromo[x]+" ");*/
+               // System.out.println();
+                BufferedImage img = new Composite(chromo).createComposite(i*4+j+1);
+                //BufferedImage img = ImageIO.read(new File("C:\\Users\\subedipiyush\\Desktop\\Project\\Final face images\\"+index+".jpg"));
                 Image scaledImg = img.getScaledInstance(150,150,Image.SCALE_SMOOTH);
                 ImageIcon icon = new ImageIcon(scaledImg);
                 but = new JButton(icon);
@@ -58,7 +64,37 @@ public class PopulationPanel extends javax.swing.JPanel {
         
     }
     
+    public void reGenerate(Main parent,ScratchGA generation,int img_no,double[] ratings)
+    {
+        generation.generate(img_no, ratings);
+        rePaintPanel(generation,parent);
+    }
   
+    public void rePaintPanel(ScratchGA generation,Main parent)
+    {
+        int index=0;
+        for(int i=0;i<row_length;i++)
+        {
+            for(int j=0;j<col_length;j++)
+            {
+                this.remove(index);
+                String[] chromo = generation.getChromo(index);
+                BufferedImage img = new Composite(chromo).createComposite(i*4+j+1);
+      
+                Image scaledImg = img.getScaledInstance(150,150,Image.SCALE_SMOOTH);
+                ImageIcon icon = new ImageIcon(scaledImg);
+                but = new JButton(icon);
+      
+                but.addActionListener(parent);
+                this.add(but, index);
+                //System.out.println(but.getPreferredSize());
+                img_but[i][j] = but;
+                index++;
+                //this.repaint();
+            }
+        }
+     
+    }
     public int getImageNumber(JButton tmp)
     {
         int pos=1;

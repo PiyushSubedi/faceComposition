@@ -22,7 +22,7 @@ public class DatabaseInterface {
     public DatabaseInterface() throws ClassNotFoundException, SQLException
     {
         Class.forName("com.mysql.jdbc.Driver");
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/facecompositiondb","root","");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/facedb","root","");
     }
     public void addData(int id, String path, int x, int y, int w, int h,String section) throws SQLException
     {
@@ -101,6 +101,33 @@ public class DatabaseInterface {
     // s.execute("insert into mastertable(img_id,path) values("+i+",\"C:\\Users\\subedipiyush\\Desktop\\Project\\Final face images\\"+i+".jpg\"");
         System.out.println("All data successfully inserted");
     }*/
+    
+    public int[][] getDetailsArray(String img_no) throws SQLException
+    {
+        String[] feat = {"eyes","nose","mouth","forehead"};
+        int[][] details = new int[4][4];
+        int x=0,y=0,w=0,h=0;
+        for(int i=0;i<4;i++)
+        {
+            Statement s = con.createStatement();
+            String query = null;
+            query = "select * from "+feat[i]+" where "+feat[i]+"_id = "+img_no;
+            ResultSet rs = s.executeQuery(query);
+            while(rs.next()){
+                x = rs.getInt("x");
+                y = rs.getInt("y");
+                w = rs.getInt("width");
+                h = rs.getInt("height");
+            }
+            details[i][0] = x;
+            details[i][1] = y;
+            details[i][2] = w;
+            details[i][3] = h;
+        }
+        return details;
+    }
+    
+    
     public static void main(String args[]) throws ClassNotFoundException, SQLException
     {
         new DatabaseInterface();

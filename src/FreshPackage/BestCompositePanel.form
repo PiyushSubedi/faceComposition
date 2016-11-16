@@ -4,7 +4,7 @@
   <Properties>
     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
       <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-        <LineBorder/>
+        <LineBorder roundedCorners="true" thickness="2"/>
       </Border>
     </Property>
   </Properties>
@@ -23,12 +23,12 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <EmptySpace min="0" pref="395" max="32767" attributes="0"/>
+          <EmptySpace min="0" pref="396" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <EmptySpace min="0" pref="298" max="32767" attributes="0"/>
+          <EmptySpace min="0" pref="296" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>

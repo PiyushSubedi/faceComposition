@@ -33,7 +33,7 @@ public class FaceComposite extends javax.swing.JFrame {
      */
     String croppedSection[] = {"eyes","nose","mouth","forehead"};
     String a[] = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"};
-    Rectangle rect;
+    Rectangle rect,rect_1;
     BufferedImage image,eyes_section = null,mouth_section=null;
     int index = 0;
     
@@ -45,7 +45,8 @@ public class FaceComposite extends javax.swing.JFrame {
 
         JPanel src_panel = new JPanel();
         //JButton cropButton = new JButton("Save");
-        rect = new Rectangle(250, 100, 256, 256);
+        rect = new Rectangle(350, 100, 256, 256);
+        rect_1 = new Rectangle(10, 100, 256, 256);
         String path = "C:\\Users\\subedipiyush\\Desktop\\Project\\Final face images\\1.jpg";
         try {
             image = ImageIO.read(new File(path));
@@ -113,13 +114,13 @@ public class FaceComposite extends javax.swing.JFrame {
             } catch (SQLException ex) {
                 Logger.getLogger(FaceComposite.class.getName()).log(Level.SEVERE, null, ex);
             }
-            g2D.drawImage(eyes_section, a[0]-100,a[1]-a[3]/2-1,a[2],a[3],this);
+            g2D.drawImage(eyes_section, a[0],a[1]-a[3]/2-1,a[2],a[3],this);
             Robot robot;
             try {
                 robot = new Robot();
                 BufferedImage croppedImage = robot.createScreenCapture(new Rectangle(rect.x,rect.y,rect.width,rect.height));
                 BufferedImage dest_Image = new BufferedImage(256, 256, BufferedImage.TYPE_INT_RGB);
-                dest_Image = new MedianFilter(3).filter(croppedImage);
+                dest_Image = new MedianFilter(5).filter(croppedImage);
                 ImageIO.write(croppedImage,"png",new File("C:\\Users\\subediPiyush\\Desktop\\mix.jpg"));
                 g2D.drawImage(dest_Image, rect.x, rect.y, rect.width,rect.height, this);
             } catch (AWTException ex) {
@@ -138,14 +139,17 @@ public class FaceComposite extends javax.swing.JFrame {
             } catch (SQLException ex) {
                 Logger.getLogger(FaceComposite.class.getName()).log(Level.SEVERE, null, ex);
             }
-            g2D.drawImage(mouth_section, a[0]-100,a[1]-a[3]/2-1,a[2],a[3],this);
+            g2D.drawImage(mouth_section, a[0],a[1]-a[3]/2-1,a[2],a[3],this);
             Robot robot;
             try {
                 robot = new Robot();
                 BufferedImage croppedImage = robot.createScreenCapture(new Rectangle(rect.x,rect.y,rect.width,rect.height));
                 BufferedImage dest_Image = new BufferedImage(256, 256, BufferedImage.TYPE_INT_RGB);
-                dest_Image = new MedianFilter(3).filter(croppedImage);
-                ImageIO.write(croppedImage,"png",new File("C:\\Users\\subediPiyush\\Desktop\\mix.jpg"));
+                ImageIO.write(croppedImage,"png",new File("C:\\Users\\subediPiyush\\Desktop\\withoutMedianFilter.jpg"));
+                g2D.drawImage(croppedImage, rect_1.x, rect_1.y, rect_1.width,rect_1.height, this);
+                g2D.draw(rect_1);
+                dest_Image = new MedianFilter(7).filter(croppedImage);
+                ImageIO.write(dest_Image,"png",new File("C:\\Users\\subediPiyush\\Desktop\\withMedianFilter.jpg"));
                 g2D.drawImage(dest_Image, rect.x, rect.y, rect.width,rect.height, this);
             } catch (AWTException ex) {
                 Logger.getLogger(FaceComposite.class.getName()).log(Level.SEVERE, null, ex);

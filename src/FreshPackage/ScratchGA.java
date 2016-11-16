@@ -16,9 +16,16 @@ class ScratchGA
 
 	public ScratchGA()
 	{
-		for(int x=1;x<=poolSize;x++)
-			pool.add(new Chromosome());
+            for(int x=1;x<=poolSize;x++)
+                pool.add(new Chromosome());
 	}
+        
+        public String[] getChromo(int index)
+        {
+            Chromosome c = (Chromosome)pool.get(index);
+            c.decodeChromo();
+            return c.decodedChromo;
+        }
 
 	public void generate(int img_no, double[] ratings)
 	{
@@ -37,7 +44,7 @@ class ScratchGA
 				System.out.print(genes + " ");
 			}
 				
-			System.out.println();
+			System.out.println("Score : " + c.score);
 		}
 	
 		for(int x=0;x<poolSize;x+=2)
@@ -72,11 +79,9 @@ class ScratchGA
 				System.out.print(genes + " ");
 			}
 				
-			System.out.println();
+			System.out.println("Score : " + c.score);
 		}
 	}
-
-
 
 	public Chromosome selectChromo(ArrayList pool)
 	{
@@ -116,27 +121,36 @@ class ScratchGA
 
 		private void getRandomIndividual()
 		{
-			// Individual chromosome buffer
-			for(int x=1;x<=chromoLength;x++)
-			{
-				String gene = Integer.toBinaryString(rand.nextInt(poolSize)); // create a random binary string 4 bits long
-				
-				// filling in the missing bits if the string is not 4 bits long (ex: for 2 it would be 10)
-				int fillLeft = genesLength - gene.length();	
-				for(int y=1;y<=fillLeft;y++)
-					chromo.append('0');
-				chromo.append(gene);
-			}
-			decodeChromo();
+                    // Individual chromosome buffer
+                    for(int x=1;x<=chromoLength;x++)
+                    {
+                        int c = rand.nextInt(poolSize);
+                        while(c == 0)
+                            c = rand.nextInt(poolSize);
+
+                        String gene = Integer.toBinaryString(c); // create a random binary string 4 bits long
+                        // filling in the missing bits if the string is not 4 bits long (ex: for 2 it would be 10)
+                        int fillLeft = genesLength - gene.length();	
+                        for(int y=1;y<=fillLeft;y++)
+                            chromo.append('0');
+                        chromo.append(gene);
+                    }
+                    decodeChromo();
 		}
 
 		public void decodeChromo()
 		{
 			int index=0;
+			double c=0;
 			for(int x=0;x<chromo.length();x+=4)
 			{
 				int gene_no = (Integer.parseInt(chromo.substring(x,x+4),2));
 				String gene = String.valueOf(gene_no);
+				if(gene.equals("0")){
+					while((c = rand.nextInt(poolSize)) == 0)
+						c = rand.nextInt(poolSize);
+					gene=String.valueOf(c);
+				}
 				decodedChromo[index++] = gene;
 			}
 		}
@@ -152,6 +166,7 @@ class ScratchGA
 				chromo.setCharAt(x,adtha_Chromo.chromo.charAt(x));
 				adtha_Chromo.chromo.setCharAt(x,tmp);
 			}	
+			
 		}
 
 		public void mutate()
@@ -161,6 +176,7 @@ class ScratchGA
 				if(rand.nextDouble() <= mutationRate)
 					chromo.setCharAt(x,(chromo.charAt(x)=='0'?'1':'0'));
 			}
+			
 		}
 
 		public void fitnessScore(Chromosome chosenBest, double[] ratings)
@@ -170,7 +186,7 @@ class ScratchGA
 			double score = 0.0;
 			for(int x=0;x<chromoLength;x++)
 			{
-				if(this.decodedChromo[x] == chosenBest.decodedChromo[x])
+				if(this.decodedChromo[x].equals(chosenBest.decodedChromo[x]))
 					c = 1.0;
 				else
 					c = 0.05;

@@ -122,6 +122,18 @@ public class RatingsPanel extends javax.swing.JPanel {
         setVisible(true);
     }
 
+    
+    public void rePaint() {
+        bg_rating.setSelectedIndex(0);
+        nose_rating.setSelectedIndex(0);
+        eyes_rating.setSelectedIndex(0);
+        mouth_rating.setSelectedIndex(0);
+        forehead_rating.setSelectedIndex(0);
+        fitnessValue.setText("");
+        super.repaint(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

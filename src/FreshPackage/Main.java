@@ -38,19 +38,23 @@ public class Main extends javax.swing.JFrame implements ActionListener{
     static RatingsPanel rating_panel;
     int selectedImage = 1;
     double fitness_value=0.0;
+    double[] ratings;
+    
+    ScratchGA generation;
+    
     public Main() {
         ///initComponents();
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-        try {
-            pop_panel = new PopulationPanel(this);
-            pop_panel.setLocation(10,10);
-            pop_panel.setSize(600,600);
-            pop_panel.setVisible(true);
-            add(pop_panel);
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
+        generation = new ScratchGA();
+        ratings = new double[5];
+        
+        pop_panel = new PopulationPanel(this,generation);
+        pop_panel.setLocation(10,10);
+        pop_panel.setSize(600,600);
+        pop_panel.setVisible(true);
+        this.getContentPane().add(pop_panel);
         
         select_panel = new BestCompositePanel();
         select_panel.setSize(350,400);
@@ -70,7 +74,7 @@ public class Main extends javax.swing.JFrame implements ActionListener{
         setVisible(true);
         //pack();
     }
-
+    /*
     public static void bestSelected(int img_no)
     {
         //BufferedImage img = new BufferedImage(40,40, BufferedImage.TYPE_INT_ARGB);
@@ -86,7 +90,7 @@ public class Main extends javax.swing.JFrame implements ActionListener{
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-    }       
+    } */      
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -158,8 +162,7 @@ public class Main extends javax.swing.JFrame implements ActionListener{
                 calcFitnessValue();
                 break;
             case "NextGeneration":
-                pop_panel.remove(0);
-                pop_panel.repaint();
+                nextGeneration();
                 break;
             default:
                 bestSelected(e);
@@ -167,19 +170,24 @@ public class Main extends javax.swing.JFrame implements ActionListener{
         }
     }
     
+    public void nextGeneration()
+    {
+        pop_panel.reGenerate(this,generation,selectedImage,ratings);
+        pop_panel.repaint();
+        select_panel.repaint();
+        rating_panel.rePaint();
+        this.repaint();
+    }
+    
     public void bestSelected(ActionEvent e)
     {
         selectedImage = pop_panel.getImageNumber((JButton)e.getSource());
-        rating_panel.bg_rating.setSelectedIndex(0);
-        rating_panel.eyes_rating.setSelectedIndex(0);
-        rating_panel.nose_rating.setSelectedIndex(0);
-        rating_panel.mouth_rating.setSelectedIndex(0);
-        rating_panel.forehead_rating.setSelectedIndex(0);
+        rating_panel.rePaint();
         fitness_value=0.0;
         paintFitnessValue(String.valueOf(fitness_value));
         BufferedImage img = null;
         try {
-            img = ImageIO.read(new File("C:\\Users\\subedipiyush\\Desktop\\Project\\Final face images\\"+selectedImage+".jpg"));
+            img = ImageIO.read(new File("C:\\Users\\subedipiyush\\Desktop\\Project\\All\\composites\\"+selectedImage+".jpg"));
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -193,6 +201,9 @@ public class Main extends javax.swing.JFrame implements ActionListener{
         double nose_rating = (double)(rating_panel.nose_rating.getSelectedIndex())/10;
         double mouth_rating = (double)(rating_panel.mouth_rating.getSelectedIndex())/10;
         double forehead_rating = (double)(rating_panel.forehead_rating.getSelectedIndex())/10;
+     
+        ratings[0] = bg_rating;ratings[1] = eyes_rating;ratings[2] = nose_rating;ratings[3] = mouth_rating;
+        ratings[4] = forehead_rating;
         
         fitness_value = bg_rating + eyes_rating + nose_rating + mouth_rating + forehead_rating;
         fitness_value = (double)Math.round(fitness_value * 100d)/100d;

@@ -56,7 +56,7 @@ public class FreshStart extends javax.swing.JFrame {
     
     public FreshStart() throws IOException {
         //initComponents();
-        setPreferredSize(new Dimension(700,700));
+        setPreferredSize(new Dimension(700,500));
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
         JPanel src_panel = new JPanel();
